@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>SMABank Futuristic Landing</title>
+
+  <!-- Google Fonts (Orbitron + Roboto for better readability) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@400;500;700&display=swap"
+    rel="stylesheet"
+  >
+
+  <style>
+    /******************************************
+     * GLOBAL STYLES + THEME
+     ******************************************/
+    * {
+      margin: 0; 
+      padding: 0; 
+      box-sizing: border-box;
+    }
+
+    :root {
+      --heading-font: 'Orbitron', sans-serif;
+      --body-font: 'Roboto', sans-serif;
+      --max-width: 1200px; /* Можно менять при желании */
+    }
+
+    body {
+      font-family: var(--body-font);
+      background: linear-gradient(135deg, #0D0D0D, #1A1A1A 70%);
+      color: #E0E0E0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+
+      /* Плавное проявление контента после splash */
+      opacity: 0;             
+      transition: opacity 1s ease;
+    }
+    body.loaded {
+      opacity: 1;  /* После splash всё плавно появляется */
+    }
+
+    a {
+      text-decoration: none;
+      color: #14F195;
+      transition: color 0.2s;
+    }
+    a:hover {
+      color: #94FFC5;
+    }
+
+    p, .faq-answer, .quantum-item p, .roadmap-item p, .team-member p {
+      font-size: 1rem;
+      line-height: 1.6;
+      color: #D0D0D0;
+    }
+
+    /* Контейнер для центрирования содержимого (используем по необходимости) */
+    .container {
+      width: 100%;
+      max-width: var(--max-width);
+      margin: 0 auto;
+      text-align: center; /* Центровка всего внутри */
+      padding: 0 1rem;    /* Небольшие боковые отступы */
+    }
+
+    /******************************************
+     * SPLASH SCREEN
+     ******************************************/
+    #splashScreen {
+      position: fixed;
+      top: 0; 
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #000;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      transition: opacity 1s ease;
+    }
+    #splashScreen img, 
+    #splashScreen .splash-text {
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+    .show {
+      opacity: 1 !important;
+    }
+    .fadeOut {
+      opacity: 0 !important;
+    }
+
+    /******************************************
+     * HEADER
+     ******************************************/
+    header {
+      background: rgba(255, 255, 255, 0.02);
+      backdrop-filter: blur(6px);
+      padding: 2rem 0;
+      margin-bottom: 0; /* убираем лишние отступы */
+    }
+    header h1 {
+      font-family: var(--heading-font);
+      font-size: 2.5rem;
+      letter-spacing: 2px;
+      color: #ffffff;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+    }
+    header p {
+      opacity: 0.85;
+      margin-bottom: 0;
+    }
+
+    /******************************************
+     * HERO (WALLET + REGISTER) SECTION
+     ******************************************/
+    .hero-section {
+      padding: 2rem 0;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+    .connect-btn, .register-btn {
+      font-family: var(--heading-font);
+      font-size: 1.2rem;
+      padding: 1rem 2rem;
+      cursor: pointer;
+      border: none;
+      border-radius: 4px;
+      background: linear-gradient(90deg, #9945FF, #14F195);
+      color: #fff;
+      font-weight: bold;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .connect-btn:hover, .register-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 10px rgba(20,241,149, 0.4);
+    }
+
+    /* FORM */
+    .form-container {
+      margin: 0 auto;
+      overflow: hidden; 
+      max-height: 0;
+      transition: max-height 0.4s ease;
+      width: 300px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 6px;
+      padding: 0 1rem;
+    }
+    .form-container.show {
+      max-height: 200px; 
+      padding: 1rem;
+    }
+    .form-container form {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .form-container label {
+      font-size: 0.9rem;
+      opacity: 0.9;
+    }
+    .form-container input {
+      font-family: var(--body-font);
+      font-size: 0.95rem;
+      padding: 0.5rem;
+      border: 1px solid #333;
+      border-radius: 4px;
+      background: #1E1E1E;
+      color: #E0E0E0;
+    }
+    .form-container button {
+      margin-top: 0.5rem;
+      align-self: flex-start;
+      cursor: pointer;
+      border: none;
+      border-radius: 4px;
+      background: #14F195;
+      color: #000;
+      font-weight: bold;
+      padding: 0.5rem 1rem;
+      transition: background 0.2s ease;
+    }
+    .form-container button:hover {
+      background: #12d884;
+    }
+
+    /* FEEDBACK MESSAGE */
+    .feedback {
+      margin-top: 1rem;
+      font-weight: bold;
+      text-align: center;
+      min-height: 1.5rem; 
+    }
+    .feedback.error {
+      color: #FF8080; 
+    }
+    .feedback.success {
+      color: #80FF80; 
+    }
+
+    /* SOCIALS */
+    .socials {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin: 1rem 0; /* Уменьшили отступ, чтобы не было огромных пробелов */
+    }
+    .socials a {
+      font-size: 1.2rem; /* чуть меньше, чтобы не «перебивать» хедер */
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+
+    /******************************************
+     * ABOUT US
+     ******************************************/
+    .about-section {
+      padding: 2rem 0;
+    }
+    .about-section h2 {
+      font-family: var(--heading-font);
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      text-transform: uppercase;
+    }
+    .about-section p {
+      max-width: 800px;
+      margin: 0 auto;
+      opacity: 0.9;
+    }
+    .about-section p span.highlight {
+      color: #14F195;
+      font-weight: bold;
+    }
+
+    /******************************************
+     * QUANTUM EDGE
+     ******************************************/
+    .quantum-section {
+      padding: 2rem 0;
+      text-align: center;
+    }
+    .quantum-section h2 {
+      font-family: var(--heading-font);
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+      text-transform: uppercase;
+    }
+    .quantum-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: center;
+      margin-top: 1rem;
+    }
+    .quantum-item {
+      flex: 1 1 300px;
+      max-width: 350px;
+      background: rgba(255,255,255,0.05);
+      margin: 0.5rem;
+      border-radius: 8px;
+      padding: 1rem;
+      transition: transform 0.2s;
+    }
+    .quantum-item:hover {
+      transform: translateY(-3px);
+    }
+    .quantum-item h3 {
+      font-family: var(--heading-font);
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    /******************************************
+     * TEAM
+     ******************************************/
+    .team-section {
+      padding: 2rem 0;
+      text-align: center;
+    }
+    .team-section h2 {
+      font-family: var(--heading-font);
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+      text-transform: uppercase;
+    }
+    .team-members {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 2rem;
+    }
+    .team-member {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      padding: 1rem;
+      max-width: 220px;
+      transition: transform 0.2s;
+    }
+    .team-member:hover {
+      transform: translateY(-5px);
+    }
+    .team-member img {
+      width: 100%;
+      border-radius: 8px;
+      margin-bottom: 0.5rem;
+    }
+    .team-member h3 {
+      font-family: var(--heading-font);
+      font-size: 1rem;
+      margin-bottom: 0.2rem;
+      text-transform: uppercase;
+    }
+
+    /******************************************
+     * ROADMAP
+     ******************************************/
+    .roadmap-section {
+      padding: 2rem 0;
+      text-align: center;
+    }
+    .roadmap-section h2 {
+      font-family: var(--heading-font);
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+      text-transform: uppercase;
+    }
+    .roadmap-timeline {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 2rem;
+      margin-top: 1rem;
+    }
+    .roadmap-item {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 1.5rem;
+      border-radius: 8px;
+      transition: transform 0.2s;
+    }
+    .roadmap-item:hover {
+      transform: translateY(-3px);
+    }
+    .roadmap-item h3 {
+      font-family: var(--heading-font);
+      margin-bottom: 0.5rem;
+      font-size: 1.2rem;
+    }
+
+    /******************************************
+     * PARTNERS
+     ******************************************/
+    .partners-section {
+      padding: 2rem 0;
+      text-align: center;
+    }
+    .partners-section h2 {
+      font-family: var(--heading-font);
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+      text-transform: uppercase;
+    }
+    .partners-logos {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 2rem;
+      margin-top: 1rem;
+    }
+    .partner {
+      background: rgba(255,255,255,0.03);
+      padding: 1rem;
+      border-radius: 8px;
+      width: 120px;
+      height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s;
+    }
+    .partner:hover {
+      transform: scale(1.05);
+    }
+    .partner img {
+      max-width: 80%;
+      max-height: 80%;
+    }
+
+    /******************************************
+     * FAQ
+     ******************************************/
+    .faq-section {
+      padding: 2rem 0;
+      max-width: 800px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .faq-section h2 {
+      font-family: var(--heading-font);
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+      text-transform: uppercase;
+    }
+    .faq-item {
+      margin-bottom: 1rem;
+      background: rgba(255,255,255,0.05);
+      border-radius: 8px;
+      padding: 1rem;
+      cursor: pointer;
+      transition: background 0.2s;
+      text-align: left; /* Внутри уже будет текст слева */
+    }
+    .faq-item:hover {
+      background: rgba(255,255,255,0.08);
+    }
+    .faq-question {
+      font-family: var(--heading-font);
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+    .faq-answer {
+      font-size: 0.95rem;
+      line-height: 1.4;
+      opacity: 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    .faq-item.active .faq-answer {
+      opacity: 1;
+      max-height: 200px; 
+    }
+
+    /******************************************
+     * FOOTER
+     ******************************************/
+    footer {
+      text-align: center;
+      padding: 1rem;
+      opacity: 0.7;
+      margin-top: auto;
+    }
+    footer p {
+      font-size: 0.8rem;
+    }
+
+    /******************************************
+     * SCROLL ANIMATIONS
+     ******************************************/
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SPLASH SCREEN -->
+  <div id="splashScreen">
+    <img id="solanaIcon" 
+         src="https://cryptologos.cc/logos/solana-sol-logo.png?v=025" 
+         alt="Solana Logo" 
+         style="width: 180px; height: auto;" />
+
+    <div id="smabankText" class="splash-text" 
+         style="margin-top: 2rem; font-size: 1.5rem; color: #14F195;">
+      SMABank <br/>
+      <span style="font-size: 0.8rem; color: #999;">(Powered by Solana Network)</span>
+    </div>
+  </div>
+
+  <!-- HEADER (в контейнере, чтобы центрировать) -->
+  <header class="reveal">
+    <div class="container">
+      <h1>SMABANK</h1>
+      <p>Solana Memes Association Bank - Taking Web3 Memes & Finance to the Next Level</p>
+    </div>
+  </header>
+
+  <!-- HERO SECTION: Connect Wallet + Register -->
+  <section class="hero-section reveal">
+    <div class="container">
+      <div class="btn-group">
+        <button class="connect-btn" id="connectWalletBtn">Connect Wallet</button>
+        <button class="register-btn" id="toggleFormBtn">Register by Email</button>
+      </div>
+
+      <!-- ФОРМА -->
+      <div class="form-container" id="formContainer">
+        <form id="emailForm">
+          <label for="emailField">E-mail</label>
+          <input type="email" id="emailField" name="emailField" placeholder="Enter your email" />
+          
+          <label for="walletField">Solana Wallet Address</label>
+          <input type="text" id="walletField" name="walletField" placeholder="Enter your wallet address" />
+          
+          <button type="button" id="sendFormBtn">Send</button>
+        </form>
+      </div>
+
+      <!-- FEEDBACK MESSAGE -->
+      <div class="feedback" id="feedbackMsg"></div>
+
+      <!-- SOCIALS -->
+      <div class="socials">
+        <a href="https://t.me/sma_bank" target="_blank">TELEGRAM</a>
+        <a href="https://twitter.com/your_account" target="_blank">X</a>
+        <a href="https://discord.gg/r9AQaswjqa" target="_blank">DISCORD</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT US SECTION -->
+  <section class="about-section reveal">
+    <div class="container">
+      <h2>About Us</h2>
+      <p>
+        SMABank is an innovative platform merging the fun side of memes with the power of Solana’s high-speed blockchain. 
+        Our mission is to create a community-driven ecosystem where creative memes meet efficient DeFi services. 
+        By weaving <span class="highlight">quantum-safe</span> technologies into our architecture, we ensure future-proof 
+        solutions for investors seeking security and growth. 
+        Join us in shaping the future of Web3 finance with humor and high performance!
+      </p>
+    </div>
+  </section>
+
+  <!-- QUANTUM EDGE SECTION -->
+  <section class="quantum-section reveal">
+    <div class="container">
+      <h2>Quantum Edge</h2>
+      <div class="quantum-grid">
+        <div class="quantum-item">
+          <h3>Qubit-Enhanced Security 💠</h3>
+          <p>
+            Our advanced cryptographic protocols utilize <strong>quantum-resistant</strong> algorithms, 
+            ensuring your assets remain secure even as quantum computing evolves. 
+            See <a href="#link1" target="_blank">Dr. Q. Bit’s article</a> for details.
+          </p>
+        </div>
+        <div class="quantum-item">
+          <h3>Atomic Swaps ⚛️</h3>
+          <p>
+            SMABank supports <em>atomic swaps</em> on Solana, enabling instant, trustless trades. 
+            This approach is inspired by cutting-edge <strong>quantum tunneling</strong> theories (see 
+            <a href="#link2">Quantum Finance Review</a> for more info).
+          </p>
+        </div>
+        <div class="quantum-item">
+          <h3>QC Lab Partnerships 🤖</h3>
+          <p>
+            We've partnered with top research institutions exploring <strong>qubit-based solutions</strong>. 
+            Together with <em>Q-Labs</em>, we aim to revolutionize DeFi with quantum synergy. 
+            Read <a href="#link3">Q-Labs Whitepaper</a> for deeper insight.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEAM SECTION -->
+  <section class="team-section reveal">
+    <div class="container">
+      <h2>Meet the Team</h2>
+      <div class="team-members">
+        <div class="team-member">
+          <img src="https://via.placeholder.com/220x150.png?text=CEO+Avatar" alt="CEO">
+          <h3>John Meme</h3>
+          <p>Chief Executive Officer</p>
+        </div>
+        <div class="team-member">
+          <img src="https://via.placeholder.com/220x150.png?text=CTO+Avatar" alt="CTO">
+          <h3>Sarah Chain</h3>
+          <p>Chief Technology Officer</p>
+        </div>
+        <div class="team-member">
+          <img src="https://via.placeholder.com/220x150.png?text=CMO+Avatar" alt="CMO">
+          <h3>Mike Smile</h3>
+          <p>Chief Marketing Officer</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROADMAP -->
+  <section class="roadmap-section reveal">
+    <div class="container">
+      <h2>Roadmap</h2>
+      <div class="roadmap-timeline">
+        <div class="roadmap-item">
+          <h3>Q1 2025</h3>
+          <p>- SMA Token launch<br>
+             - Listing on first DEX<br>
+             - Building the community (Discord, Telegram)</p>
+        </div>
+        <div class="roadmap-item">
+          <h3>Q2 2025</h3>
+          <p>- Airdrop for early holders<br>
+             - Partnerships with NFT projects<br>
+             - Meme campaign on socials</p>
+        </div>
+        <div class="roadmap-item">
+          <h3>Q3 2025</h3>
+          <p>- Staking pool integration<br>
+             - Collabs with top influencers<br>
+             - DAO governance launch</p>
+        </div>
+        <div class="roadmap-item">
+          <h3>Q4 2025</h3>
+          <p>- Listing on a major CEX<br>
+             - Enterprise partnerships<br>
+             - Global marketing push</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PARTNERS -->
+  <section class="partners-section reveal">
+    <div class="container">
+      <h2>Our Partners</h2>
+      <div class="partners-logos">
+        <div class="partner">
+          <img src="https://cryptologos.cc/logos/raydium-ray-logo.svg?v=025" alt="Raydium">
+        </div>
+        <div class="partner">
+          <img src="https://cryptologos.cc/logos/serum-srm-logo.svg?v=025" alt="Serum">
+        </div>
+        <div class="partner">
+          <img src="https://cryptologos.cc/logos/orca-orca-logo.svg?v=025" alt="Orca">
+        </div>
+        <div class="partner">
+          <img src="https://cryptologos.cc/logos/bonfida-fida-logo.svg?v=025" alt="Bonfida">
+        </div>
+        <div class="partner">
+          <img src="https://cryptologos.cc/logos/step-finance-step-logo.svg?v=025" alt="Step Finance">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ SECTION -->
+  <section class="faq-section reveal">
+    <h2>FAQ</h2>
+    <div class="faq-item">
+      <div class="faq-question">What is SMABank?</div>
+      <div class="faq-answer">
+        SMABank is a crypto-finance project focusing on memes, DeFi, and quantum readiness on the Solana blockchain.
+      </div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-question">How do I buy SMA tokens?</div>
+      <div class="faq-answer">
+        You can buy SMA tokens on any Solana DEX that supports our pairing (like Raydium). Simply connect your wallet and swap.
+      </div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-question">Is SMABank using real quantum computing?</div>
+      <div class="faq-answer">
+        We're collaborating with QC experts to ensure future-proof <em>quantum-resilient</em> approaches. 
+        While fully functional quantum solutions are still in R&D, we are staying ahead by implementing 
+        quantum-safe cryptographic layers.
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="reveal">
+    <div class="container">
+      <p>© 2025 SMABank. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Подключаем Solana Web3 (Phantom / Solflare) -->
+  <script src="https://unpkg.com/@solana/web3.js@latest/bundles/web3.min.js"></script>
+  <script>
+    /************************************************
+     * 0. SPLASH SCREEN LOGIC
+     ***********************************************/
+    const splashScreen = document.getElementById('splashScreen');
+    const solanaIcon = document.getElementById('solanaIcon');
+    const smabankText = document.getElementById('smabankText');
+
+    // Показать иконку через 0.2с
+    setTimeout(() => {
+      solanaIcon.classList.add('show');
+    }, 200);
+
+    // Через 1.2с: убираем иконку, показываем текст SMABank
+    setTimeout(() => {
+      solanaIcon.classList.remove('show');
+      smabankText.classList.add('show');
+    }, 1200);
+
+    // Через 2.4с: fadeOut всего сплэша
+    setTimeout(() => {
+      splashScreen.classList.add('fadeOut');
+    }, 2400);
+
+    // Через 3с: скрываем сплэш, показываем контент
+    setTimeout(() => {
+      splashScreen.style.display = 'none';
+      document.body.classList.add('loaded');
+    }, 3000);
+
+    /************************************************
+     * 1. SCROLL ANIMATIONS (IntersectionObserver)
+     ***********************************************/
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal').forEach(el => {
+      observer.observe(el);
+    });
+
+    /************************************************
+     * 2. CONNECT WALLET
+     ***********************************************/
+    const connectBtn = document.getElementById('connectWalletBtn');
+    async function connectWallet() {
+      // Check Phantom
+      if (window.solana && window.solana.isPhantom) {
+        try {
+          await window.solana.connect();
+          alert("Phantom Connected: " + window.solana.publicKey.toString());
+          return;
+        } catch (err) {
+          console.error("Phantom connect error:", err);
+          alert("Failed to connect Phantom: " + err.message);
+        }
+      }
+      // Check Solflare
+      else if (window.solflare && window.solflare.isSolflare) {
+        try {
+          await window.solflare.connect();
+          alert("Solflare Connected: " + window.solflare.publicKey.toString());
+          return;
+        } catch (err) {
+          console.error("Solflare connect error:", err);
+          alert("Failed to connect Solflare: " + err.message);
+        }
+      }
+      else {
+        alert("No compatible Solana wallet found. Please install Phantom or Solflare.");
+      }
+    }
+    connectBtn.addEventListener('click', connectWallet);
+
+    /************************************************
+     * 3. TOGGLE FORM (Register by Email)
+     ***********************************************/
+    const toggleFormBtn = document.getElementById('toggleFormBtn');
+    const formContainer = document.getElementById('formContainer');
+
+    toggleFormBtn.addEventListener('click', () => {
+      if (formContainer.classList.contains('show')) {
+        formContainer.classList.remove('show');
+        // Очищаем поля при скрытии
+        document.getElementById('emailField').value = "";
+        document.getElementById('walletField').value = "";
+      } else {
+        formContainer.classList.add('show');
+      }
+    });
+
+    /************************************************
+     * 4. SEND FORM (WITHOUT MAILTO)
+     ***********************************************/
+    const sendFormBtn = document.getElementById('sendFormBtn');
+    const feedbackMsg = document.getElementById('feedbackMsg');
+
+    sendFormBtn.addEventListener('click', () => {
+      const emailValue = document.getElementById('emailField').value.trim();
+      const walletValue = document.getElementById('walletField').value.trim();
+
+      // Закрываем форму
+      formContainer.classList.remove('show');
+
+      // Проверяем заполненность
+      feedbackMsg.textContent = "";
+      feedbackMsg.className = "feedback";
+
+      if (!emailValue || !walletValue) {
+        feedbackMsg.classList.add('error');
+        feedbackMsg.textContent = "Data not sent, please fill in the fields";
+        setTimeout(() => {
+          feedbackMsg.textContent = "";
+        }, 3000);
+      } else {
+        feedbackMsg.classList.add('success');
+        feedbackMsg.textContent = "All data sent";
+        setTimeout(() => {
+          feedbackMsg.textContent = "";
+        }, 3000);
+      }
+
+      // Очищаем поля
+      document.getElementById('emailField').value = "";
+      document.getElementById('walletField').value = "";
+    });
+
+    /************************************************
+     * 5. FAQ TOGGLE
+     ***********************************************/
+    document.querySelectorAll('.faq-item').forEach(item => {
+      item.addEventListener('click', () => {
+        item.classList.toggle('active');
+      });
+    });
+  </script>
+</body>
+</html>
